@@ -33,11 +33,79 @@ telomerehunter-optimized/
 
 ### Prerequisites
 
-- GCC/G++ with C++11 support
-- htslib (libhts-dev)
-- samtools
+The following dependencies are required:
+
+#### System Dependencies
+
+**samtools** (required for BAM/CRAM processing):
+```bash
+# Ubuntu/Debian
+sudo apt-get update && sudo apt-get install samtools
+
+# CentOS/RHEL
+sudo yum install samtools
+
+# macOS
+brew install samtools
+
+# Conda
+conda install -c bioconda samtools
+
+# From source
+git clone https://github.com/samtools/samtools.git
+cd samtools && make && sudo make install
+```
+
+**htslib** (required for C++ filter compilation):
+```bash
+# Ubuntu/Debian
+sudo apt-get install libhts-dev
+
+# CentOS/RHEL
+sudo yum install htslib-devel
+
+# macOS
+brew install htslib
+
+# Conda
+conda install -c bioconda htslib
+
+# From source
+git clone https://github.com/samtools/htslib.git
+cd htslib && make && sudo make install
+```
+
+**Build tools**:
+```bash
+# Ubuntu/Debian
+sudo apt-get install build-essential
+
+# CentOS/RHEL
+sudo yum groupinstall "Development Tools"
+
+# macOS (requires Xcode Command Line Tools)
+xcode-select --install
+```
+
+#### Python Dependencies
+
 - Python 2.7
-- R with packages: ggplot2, dplyr, cowplot, reshape2, RColorBrewer
+- pysam >= 0.15.0
+- numpy
+
+These will be installed automatically by `setup.py`.
+
+#### R Dependencies
+
+Required R packages:
+```r
+install.packages(c("ggplot2", "dplyr", "cowplot", "reshape2", "RColorBrewer"))
+```
+
+Or using conda:
+```bash
+conda install -c conda-forge r-ggplot2 r-dplyr r-cowplot r-reshape2 r-rcolorbrewer
+```
 
 ### Building the C++ Filter
 

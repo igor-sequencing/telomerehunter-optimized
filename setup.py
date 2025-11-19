@@ -13,16 +13,70 @@ import os
 
 class CustomInstall(install):
     """Custom installation to build C++ component"""
+
+    def check_samtools(self):
+        """Check if samtools is installed"""
+        try:
+            subprocess.check_output(['samtools', '--version'], stderr=subprocess.STDOUT)
+            print("✓ samtools found")
+            return True
+        except (OSError, subprocess.CalledProcessError):
+            print("\n" + "="*70)
+            print("WARNING: samtools is not installed or not in PATH")
+            print("="*70)
+            print("\nsamtools is required for TelomereHunter to process BAM/CRAM files.")
+            print("\nInstallation instructions:")
+            print("  Ubuntu/Debian:  sudo apt-get install samtools")
+            print("  CentOS/RHEL:    sudo yum install samtools")
+            print("  macOS:          brew install samtools")
+            print("  Conda:          conda install -c bioconda samtools")
+            print("  From source:    https://github.com/samtools/samtools")
+            print("\nAfter installing samtools, you can continue using TelomereHunter.")
+            print("="*70 + "\n")
+            return False
+
+    def check_htslib(self):
+        """Check if htslib development files are available"""
+        try:
+            # Try to compile a simple test
+            result = subprocess.check_output(
+                ['pkg-config', '--cflags', '--libs', 'htslib'],
+                stderr=subprocess.STDOUT
+            )
+            print("✓ htslib development files found")
+            return True
+        except (OSError, subprocess.CalledProcessError):
+            print("\n" + "="*70)
+            print("WARNING: htslib development files not found")
+            print("="*70)
+            print("\nhtslib is required to build the C++ filter.")
+            print("\nInstallation instructions:")
+            print("  Ubuntu/Debian:  sudo apt-get install libhts-dev")
+            print("  CentOS/RHEL:    sudo yum install htslib-devel")
+            print("  macOS:          brew install htslib")
+            print("  Conda:          conda install -c bioconda htslib")
+            print("  From source:    https://github.com/samtools/htslib")
+            print("\nAfter installing htslib, run: python setup.py install")
+            print("="*70 + "\n")
+            return False
+
     def run(self):
+        # Check dependencies
+        print("\nChecking dependencies...")
+        samtools_ok = self.check_samtools()
+        htslib_ok = self.check_htslib()
+
         # Build C++ filter
-        print("Building C++ telomere filter...")
+        print("\nBuilding C++ telomere filter...")
         try:
             subprocess.check_call(['make', 'clean'])
             subprocess.check_call(['make'])
-            print("C++ filter built successfully")
+            print("✓ C++ filter built successfully\n")
         except subprocess.CalledProcessError as e:
-            print("Warning: Failed to build C++ filter. You may need to build it manually.")
+            print("\nWarning: Failed to build C++ filter.")
             print("Error: {}".format(e))
+            print("You may need to install dependencies and build manually.")
+            print("Run: make clean && make\n")
 
         # Run standard installation
         install.run(self)
