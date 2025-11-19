@@ -45,8 +45,18 @@ def sort_telomere_reads(input_dir, band_file, out_dir, pid, mapq_threshold, repe
 		patterns.append(getReverseComplement(repeat))
 
 
-	# open input bam_file for reading
+	# open input bam_file for reading (name-sorted, no index needed for sequential access)
+	# Suppress stderr warning about missing index file (expected for name-sorted BAMs)
+	stderr_backup = os.dup(sys.stderr.fileno())
+	devnull = os.open(os.devnull, os.O_WRONLY)
+	os.dup2(devnull, sys.stderr.fileno())
+
 	bamfile = pysam.Samfile( input_dir + "/" + pid + "_filtered_name_sorted.bam" , "rb" )
+
+	# Restore stderr
+	os.dup2(stderr_backup, sys.stderr.fileno())
+	os.close(devnull)
+	os.close(stderr_backup)
 
 
 	# open filtered files for writing
