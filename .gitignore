@@ -1,0 +1,46 @@
+# Compiled binaries
+bin/telomere_filter
+*.o
+*.so
+*.a
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# R
+.Rhistory
+.RData
+.Rproj.user
+Rplots.pdf
+
+# Test data
+*.bam
+*.bam.bai
+*.cram
+*.cram.crai
+
+# Output directories
+*.dir/
+*_TelomerCnt_*/
+plots/
+temp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
